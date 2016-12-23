@@ -14,32 +14,46 @@ proxifier_quit()
 # WORK MOD
 at_work_mod()
 {
+    if readlink ~/.ssh/config >/dev/null 2>&1 | grep office;then
+        exit 0
+    fi
+
     # empty dns servers when connect office wifi
     /usr/sbin/networksetup -setdnsservers Wi-Fi Empty
 
     # set pac url
     /usr/sbin/networksetup -setautoproxyurl Wi-Fi http://txp-01.tencent.com/proxy.pac
 
+    # update ssh config file
+    ln -sf ~/.ssh/config.office ~/.ssh/config
+
     # slient
     osascript -e "set Volume 0"
 
     osascript <<EOD
     tell application "RTX"
-	    run
+        run
     end tell
-    tell application "ShadowsocksX"
-        quit
-    end tell
+    --tell application "ShadowsocksX-NG"
+    --    quit
+    --end tell
 EOD
 }
 
 # HOME MOD
 at_home_mod()
 {
-	# set my pac url so that i can across the GFW at home.
+    # set my pac url so that i can across the GFW at home.
     # /usr/sbin/networksetup -setautoproxyurl Wi-Fi http://example.pac
 
-	# run or quit apps
+    if readlink ~/.ssh/config >/dev/null 2>&1 | grep home;then
+        exit 0
+    fi
+
+    # update ssh config file
+    ln -sf ~/.ssh/config.home ~/.ssh/config
+
+    # run or quit apps
     osascript <<EOD
     tell application "RTX"
         quit
@@ -76,6 +90,10 @@ if [[ $SSID =~ ^Tencent ]]; then
         at_work_mod
 
         SHOW_MOD="Work Mod"
+    elif [[ $SSID == 'Tencent-StaffWiFi' ]];then
+        at_home_mod
+
+        SHOW_MOD="Work Staff Mod"
     fi
 
 else
