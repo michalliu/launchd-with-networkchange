@@ -14,7 +14,7 @@ proxifier_quit()
 # WORK MOD
 at_work_mod()
 {
-    if readlink ~/.ssh/config >/dev/null 2>&1 | grep office;then
+    if readlink ~/.ssh/config | grep office>/dev/null 2>&1 ;then
         exit 0
     fi
 
@@ -46,7 +46,7 @@ at_home_mod()
     # set my pac url so that i can across the GFW at home.
     # /usr/sbin/networksetup -setautoproxyurl Wi-Fi http://example.pac
 
-    if readlink ~/.ssh/config >/dev/null 2>&1 | grep home;then
+    if readlink ~/.ssh/config | grep home>/dev/null 2>&1 ;then
         exit 0
     fi
 
